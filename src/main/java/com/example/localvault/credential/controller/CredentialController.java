@@ -38,17 +38,18 @@ public class CredentialController {
     @Operation(summary = "비밀번호 목록 조회 (마스킹)")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CredentialResponse>>> getList(
-            @RequestParam(required = false) CredentialType type,
-            @RequestParam(required = false) String keyword,
+            @RequestParam(value = "type", required = false) CredentialType type,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @AuthenticationPrincipal Long memberId,
             Pageable pageable) {
-        Page<CredentialResponse> list = credentialService.getList(type, keyword, pageable);
+        Page<CredentialResponse> list = credentialService.getList(type, keyword, memberId, pageable);
         return ResponseEntity.ok(ApiResponse.ok(list));
     }
 
     @Operation(summary = "비밀번호 상세 조회 (복호화)")
     @GetMapping("/{id}/reveal")
     public ResponseEntity<ApiResponse<CredentialResponse>> reveal(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @AuthenticationPrincipal Long memberId,
             HttpServletRequest request) {
         CredentialResponse response = credentialService.reveal(id, memberId, request);
@@ -58,7 +59,7 @@ public class CredentialController {
     @Operation(summary = "비밀번호 수정")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody CredentialRequest request) {
         credentialService.update(id, request);
         return ResponseEntity.ok(ApiResponse.ok(null));
@@ -66,7 +67,7 @@ public class CredentialController {
 
     @Operation(summary = "비밀번호 삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable("id") Long id) {
         credentialService.delete(id);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }

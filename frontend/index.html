@@ -5,132 +5,244 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LocalVault</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Vue 3 CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- Axios CDN -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div id="app">
         <!-- 로그인 전 -->
-		<div v-if="!token" class="login-container">
-			<h1>🔐 LocalVault</h1>
-			<p>사내 비밀번호 관리 시스템</p>
+        <div v-if="!token" class="login-container">
+            <h1>🔐 LocalVault</h1>
+            <p>사내 비밀번호 관리 시스템</p>
+            
+            <div v-if="!isSignup">
+                <div class="form-group">
+                    <input v-model="loginForm.email" type="email" placeholder="이메일" @keyup.enter="login">
+                </div>
+                <div class="form-group">
+                    <input v-model="loginForm.password" type="password" placeholder="비밀번호" @keyup.enter="login">
+                </div>
+                <button @click="login" class="btn btn-primary btn-block">로그인</button>
+                <p class="toggle-text">계정이 없으신가요? <a @click="isSignup = true">회원가입</a></p>
+            </div>
+            
+            <div v-else>
+                <div class="form-group">
+                    <input v-model="signupForm.email" type="email" placeholder="이메일">
+                </div>
+                <div class="form-group">
+                    <input v-model="signupForm.password" type="password" placeholder="비밀번호 (8자 이상)">
+                </div>
+                <div class="form-group">
+                    <input v-model="signupForm.name" type="text" placeholder="이름">
+                </div>
+                <button @click="signup" class="btn btn-primary btn-block">회원가입</button>
+                <p class="toggle-text">이미 계정이 있으신가요? <a @click="isSignup = false">로그인</a></p>
+            </div>
+            
+            <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
+        </div>
 
-			<!-- 로그인 폼 -->
-			<div v-if="!isSignup">
-				<div class="form-group">
-					<input v-model="loginForm.email" type="email" placeholder="이메일"
-						@keyup.enter="login">
-				</div>
-				<div class="form-group">
-					<input v-model="loginForm.password" type="password"
-						placeholder="비밀번호" @keyup.enter="login">
-				</div>
-				<button @click="login" class="btn btn-primary">로그인</button>
-				<p class="toggle-text">
-					계정이 없으신가요? <a @click="isSignup = true">회원가입</a>
-				</p>
-			</div>
-
-			<!-- 회원가입 폼 -->
-			<div v-else>
-				<div class="form-group">
-					<input v-model="signupForm.email" type="email" placeholder="이메일"
-						@keyup.enter="signup">
-				</div>
-				<div class="form-group">
-					<input v-model="signupForm.password" type="password"
-						placeholder="비밀번호 (8자 이상)" @keyup.enter="signup">
-				</div>
-				<div class="form-group">
-					<input v-model="signupForm.name" type="text" placeholder="이름"
-						@keyup.enter="signup">
-				</div>
-				<button @click="signup" class="btn btn-primary">회원가입</button>
-				<p class="toggle-text">
-					이미 계정이 있으신가요? <a @click="isSignup = false">로그인</a>
-				</p>
-			</div>
-
-			<p v-if="errorMsg" class="error">{{ errorMsg }}</p>
-		</div>
-
-		<!-- 로그인 후 -->
-        <div v-else class="main-container">
-            <header>
-                <h1>🔐 LocalVault</h1>
-                <div class="user-info">
-                    <span>{{ user.name }}님</span>
+        <!-- 로그인 후 -->
+        <div v-else class="layout">
+            <!-- 사이드바 -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h1>🔐 LocalVault</h1>
+                </div>
+                <nav class="sidebar-nav">
+                    <a @click="currentPage = 'list'" :class="{ active: currentPage === 'list' }">
+                        📋 비밀번호 목록
+                    </a>
+                    <a @click="currentPage = 'create'" :class="{ active: currentPage === 'create' }">
+                        ➕ 비밀번호 등록
+                    </a>
+                    
+                    <div v-if="user.role === 'ADMIN'" class="nav-divider">관리자</div>
+                    <a v-if="user.role === 'ADMIN'" @click="currentPage = 'users'" :class="{ active: currentPage === 'users' }">
+                        👥 사용자 관리
+                    </a>
+                    <a v-if="user.role === 'ADMIN'" @click="currentPage = 'permissions'" :class="{ active: currentPage === 'permissions' }">
+                        🔑 권한 관리
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <span>{{ user.name }}</span>
                     <button @click="logout" class="btn btn-sm">로그아웃</button>
                 </div>
-            </header>
+            </aside>
 
-            <!-- 비밀번호 등록 폼 -->
-            <div class="card">
-                <h2>비밀번호 등록</h2>
-                <div class="form-row">
-                    <input v-model="credForm.serviceName" placeholder="서비스명" />
-                    <select v-model="credForm.credentialType">
-                        <option value="SERVER">서버</option>
-                        <option value="DATABASE">DB</option>
-                        <option value="SITE">사이트</option>
-                        <option value="API">API</option>
-                        <option value="OTHER">기타</option>
-                    </select>
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+                <!-- 비밀번호 목록 -->
+                <div v-if="currentPage === 'list'" class="page">
+                    <div class="page-header">
+                        <h2>비밀번호 목록</h2>
+                    </div>
+                    <div class="card">
+                        <table v-if="credentials.length > 0">
+                            <thead>
+                                <tr>
+                                    <th>서비스</th>
+                                    <th>유형</th>
+                                    <th>URL</th>
+                                    <th>계정</th>
+                                    <th>비밀번호</th>
+                                    <th>액션</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="cred in credentials" :key="cred.id">
+                                    <td><strong>{{ cred.serviceName }}</strong></td>
+                                    <td><span class="badge">{{ cred.credentialType }}</span></td>
+                                    <td>{{ cred.url || '-' }}</td>
+                                    <td>{{ cred.username }}</td>
+                                    <td class="password-cell">
+                                        <code>{{ cred.revealed ? cred.password : '••••••••' }}</code>
+                                    </td>
+                                    <td class="actions">
+                                        <button @click="toggleReveal(cred)" class="btn-icon" :title="cred.revealed ? '숨기기' : '보기'">
+                                            {{ cred.revealed ? '🙈' : '👁️' }}
+                                        </button>
+                                        <button @click="copyPassword(cred)" class="btn-icon" title="복사">📋</button>
+                                        <button @click="deleteCredential(cred.id)" class="btn-icon" title="삭제">🗑️</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div v-else class="empty">
+                            <p>등록된 비밀번호가 없습니다.</p>
+                            <button @click="currentPage = 'create'" class="btn btn-primary">첫 비밀번호 등록하기</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-row">
-                    <input v-model="credForm.url" placeholder="URL" />
-                    <input v-model="credForm.port" type="number" placeholder="포트" />
-                </div>
-                <div class="form-row">
-                    <input v-model="credForm.username" placeholder="계정" />
-                    <input v-model="credForm.password" type="password" placeholder="비밀번호" />
-                </div>
-                <div class="form-row">
-                    <input v-model="credForm.description" placeholder="설명" />
-                    <button @click="createCredential" class="btn btn-primary">등록</button>
-                </div>
-            </div>
 
-            <!-- 비밀번호 목록 -->
-            <div class="card">
-                <h2>비밀번호 목록</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>서비스</th>
-                            <th>유형</th>
-                            <th>계정</th>
-                            <th>비밀번호</th>
-                            <th>액션</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="cred in credentials" :key="cred.id">
-                            <td>{{ cred.serviceName }}</td>
-                            <td><span class="badge">{{ cred.credentialType }}</span></td>
-                            <td>{{ cred.username }}</td>
-                            <td class="password-cell">
-                                <span>{{ cred.revealed ? cred.password : '********' }}</span>
-                            </td>
-                            <td>
-                                <button @click="toggleReveal(cred)" class="btn btn-sm">
-                                    {{ cred.revealed ? '🙈' : '👁️' }}
-                                </button>
-                                <button @click="copyPassword(cred)" class="btn btn-sm">📋</button>
-                                <button @click="deleteCredential(cred.id)" class="btn btn-sm btn-danger">🗑️</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p v-if="credentials.length === 0" class="empty">등록된 비밀번호가 없습니다.</p>
-            </div>
+                <!-- 비밀번호 등록 -->
+                <div v-if="currentPage === 'create'" class="page">
+                    <div class="page-header">
+                        <h2>비밀번호 등록</h2>
+                    </div>
+                    <div class="card form-card">
+                        <div class="form-group">
+                            <label>서비스명 *</label>
+                            <input v-model="credForm.serviceName" placeholder="예: 운영 DB, AWS Console">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>유형 *</label>
+                                <select v-model="credForm.credentialType">
+                                    <option value="SERVER">서버</option>
+                                    <option value="DATABASE">데이터베이스</option>
+                                    <option value="SITE">웹사이트</option>
+                                    <option value="API">API</option>
+                                    <option value="OTHER">기타</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>포트</label>
+                                <input v-model="credForm.port" type="number" placeholder="예: 22, 3306">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input v-model="credForm.url" placeholder="예: db.example.com">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>계정 *</label>
+                                <input v-model="credForm.username" placeholder="예: admin">
+                            </div>
+                            <div class="form-group">
+                                <label>비밀번호 *</label>
+                                <input v-model="credForm.password" type="password" placeholder="비밀번호 입력">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>설명</label>
+                            <input v-model="credForm.description" placeholder="예: 운영 PostgreSQL 마스터">
+                        </div>
+                        <div class="form-actions">
+                            <button @click="currentPage = 'list'" class="btn">취소</button>
+                            <button @click="createCredential" class="btn btn-primary">등록</button>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- 알림 -->
-            <div v-if="notification" class="notification" :class="notification.type">
-                {{ notification.message }}
-            </div>
+                <!-- 사용자 관리 (관리자) -->
+                <div v-if="currentPage === 'users'" class="page">
+                    <div class="page-header">
+                        <h2>사용자 관리</h2>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>이메일</th>
+                                    <th>이름</th>
+                                    <th>권한</th>
+                                    <th>상태</th>
+                                    <th>가입일</th>
+                                    <th>액션</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="m in members" :key="m.id">
+                                    <td>{{ m.email }}</td>
+                                    <td>{{ m.name }}</td>
+                                    <td><span class="badge">{{ m.role }}</span></td>
+                                    <td>
+                                        <span :class="['status', m.status.toLowerCase()]">{{ m.status }}</span>
+                                    </td>
+                                    <td>{{ formatDate(m.createdAt) }}</td>
+                                    <td class="actions">
+                                        <button v-if="m.status === 'PENDING'" @click="activateMember(m.id)" class="btn btn-sm btn-primary">승인</button>
+                                        <button v-if="m.status === 'ACTIVE'" @click="deactivateMember(m.id)" class="btn btn-sm">비활성화</button>
+                                        <button v-if="m.status === 'INACTIVE'" @click="activateMember(m.id)" class="btn btn-sm btn-primary">활성화</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 권한 관리 (관리자) -->
+                <div v-if="currentPage === 'permissions'" class="page">
+                    <div class="page-header">
+                        <h2>권한 관리</h2>
+                    </div>
+                    <div class="card form-card">
+                        <h3>권한 부여</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>사용자</label>
+                                <select v-model="permForm.memberId">
+                                    <option value="">선택하세요</option>
+                                    <option v-for="m in members" :key="m.id" :value="m.id">
+                                        {{ m.name }} ({{ m.email }})
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>비밀번호</label>
+                                <select v-model="permForm.credentialId">
+                                    <option value="">선택하세요</option>
+                                    <option v-for="c in credentials" :key="c.id" :value="c.id">
+                                        {{ c.serviceName }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="align-self: flex-end;">
+                                <button @click="grantPermission" class="btn btn-primary">권한 부여</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 알림 -->
+        <div v-if="notification" class="notification" :class="notification.type">
+            {{ notification.message }}
         </div>
     </div>
 

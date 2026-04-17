@@ -8,6 +8,7 @@ import com.example.localvault.global.exception.BusinessException;
 import com.example.localvault.global.exception.ErrorCode;
 import com.example.localvault.member.domain.Member;
 import com.example.localvault.member.domain.MemberRole;
+import com.example.localvault.member.domain.MemberStatus;
 import com.example.localvault.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,7 +55,10 @@ public class AuthService {
         }
 
         // 계정 상태 확인
-        if (member.getStatus() == com.example.localvault.member.domain.MemberStatus.INACTIVE) {
+        if (member.getStatus() == MemberStatus.PENDING) {
+            throw new BusinessException(ErrorCode.AUTH_PENDING_ACCOUNT);
+        }
+        if (member.getStatus() == MemberStatus.INACTIVE) {
             throw new BusinessException(ErrorCode.AUTH_INACTIVE_ACCOUNT);
         }
 

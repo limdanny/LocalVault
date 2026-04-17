@@ -43,7 +43,7 @@ public class PermissionController {
     @Operation(summary = "사용자별 권한 조회")
     @GetMapping("/members/{memberId}")
     public ResponseEntity<ApiResponse<List<PermissionResponse>>> getByMember(
-            @PathVariable Long memberId) {
+    		@PathVariable("memberId") Long memberId) {
         List<PermissionResponse> list = permissionService.getByMember(memberId);
         return ResponseEntity.ok(ApiResponse.ok(list));
     }
@@ -51,7 +51,7 @@ public class PermissionController {
     @Operation(summary = "비밀번호별 권한 조회")
     @GetMapping("/credentials/{credentialId}")
     public ResponseEntity<ApiResponse<List<PermissionResponse>>> getByCredential(
-            @PathVariable Long credentialId) {
+    		@PathVariable("credentialId") Long credentialId) {
         List<PermissionResponse> list = permissionService.getByCredential(credentialId);
         return ResponseEntity.ok(ApiResponse.ok(list));
     }

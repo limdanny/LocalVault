@@ -20,17 +20,17 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class HistoryController {
 
-    private final HistoryService historyService;
+	private final HistoryService historyService;
 
-    @Operation(summary = "조회 이력 검색")
-    @GetMapping
-    public ResponseEntity<ApiResponse<Page<HistoryResponse>>> getList(
-            @RequestParam(required = false) Long memberId,
-            @RequestParam(required = false) Long credentialId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            Pageable pageable) {
-        Page<HistoryResponse> list = historyService.getList(memberId, credentialId, startDate, endDate, pageable);
-        return ResponseEntity.ok(ApiResponse.ok(list));
-    }
+	@Operation(summary = "조회 이력 검색")
+	@GetMapping
+	public ResponseEntity<ApiResponse<Page<HistoryResponse>>> getList(
+			@RequestParam(value = "memberId", required = false) Long memberId,
+			@RequestParam(value = "credentialId", required = false) Long credentialId,
+			@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+			Pageable pageable) {
+		Page<HistoryResponse> list = historyService.getList(memberId, credentialId, startDate, endDate, pageable);
+		return ResponseEntity.ok(ApiResponse.ok(list));
+	}
 }

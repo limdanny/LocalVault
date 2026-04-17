@@ -13,6 +13,7 @@ public enum ErrorCode {
     AUTH_INACTIVE_ACCOUNT("AUTH_003", "비활성화된 계정입니다"),
     AUTH_TOKEN_EXPIRED("AUTH_004", "만료된 토큰입니다"),
     AUTH_TOKEN_INVALID("AUTH_005", "유효하지 않은 토큰입니다"),
+    AUTH_PENDING_ACCOUNT("AUTH_006", "승인 대기 중인 계정입니다"),
 
     // 권한
     PERM_ACCESS_DENIED("PERM_001", "권한이 없습니다"),

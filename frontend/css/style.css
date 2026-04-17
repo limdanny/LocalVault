@@ -6,8 +6,9 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f5f5;
+    background: #f0f2f5;
     min-height: 100vh;
+    color: #333;
 }
 
 /* 로그인 */
@@ -16,181 +17,19 @@ body {
     margin: 100px auto;
     padding: 40px;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
     text-align: center;
 }
 
 .login-container h1 {
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 8px;
+    font-size: 28px;
 }
 
-.login-container p {
+.login-container > p {
     color: #666;
     margin-bottom: 30px;
-}
-
-/* 메인 */
-.main-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-/* 카드 */
-.card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.card h2 {
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #333;
-}
-
-/* 폼 */
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-input, select {
-    flex: 1;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: border-color 0.2s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #4a90d9;
-}
-
-/* 버튼 */
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-primary {
-    background: #4a90d9;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #357abd;
-}
-
-.btn-sm {
-    padding: 8px 12px;
-    font-size: 12px;
-}
-
-.btn-danger {
-    background: #e74c3c;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #c0392b;
-}
-
-/* 테이블 */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-th {
-    font-weight: 600;
-    color: #666;
-    font-size: 13px;
-}
-
-.password-cell {
-    font-family: monospace;
-}
-
-.badge {
-    display: inline-block;
-    padding: 4px 10px;
-    background: #e8f4fd;
-    color: #4a90d9;
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-.empty {
-    text-align: center;
-    color: #999;
-    padding: 40px;
-}
-
-.error {
-    color: #e74c3c;
-    margin-top: 15px;
-}
-
-/* 알림 */
-.notification {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    padding: 15px 25px;
-    border-radius: 8px;
-    color: white;
-    animation: slideIn 0.3s ease;
-}
-
-.notification.success {
-    background: #27ae60;
-}
-
-.notification.error {
-    background: #e74c3c;
 }
 
 .toggle-text {
@@ -205,6 +44,304 @@ th {
     text-decoration: underline;
 }
 
+.error {
+    color: #e74c3c;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* 레이아웃 */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 260px;
+    background: #1a1d21;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header h1 {
+    font-size: 20px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+}
+
+.sidebar-nav a {
+    display: block;
+    padding: 12px 24px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-nav a:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.sidebar-nav a.active {
+    background: rgba(74, 144, 217, 0.3);
+    color: white;
+    border-left: 3px solid #4a90d9;
+}
+
+.nav-divider {
+    padding: 20px 24px 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+}
+
+.sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 32px;
+    background: #f0f2f5;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* 카드 */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.form-card {
+    max-width: 600px;
+}
+
+/* 폼 */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #4a90d9;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+}
+
+/* 버튼 */
+.btn {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #f5f5f5;
+}
+
+.btn-primary {
+    background: #4a90d9;
+    color: white;
+    border-color: #4a90d9;
+}
+
+.btn-primary:hover {
+    background: #357abd;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.btn-icon:hover {
+    background: #f0f0f0;
+}
+
+/* 테이블 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    font-weight: 600;
+    color: #666;
+    font-size: 13px;
+    background: #fafafa;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+.password-cell code {
+    background: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 13px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+/* 뱃지 */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #e8f4fd;
+    color: #4a90d9;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* 상태 */
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 빈 상태 */
+.empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty p {
+    margin-bottom: 20px;
+}
+
+/* 알림 */
+.notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    animation: slideIn 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.success {
+    background: #27ae60;
+}
+
+.notification.error {
+    background: #e74c3c;
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -214,4 +351,10 @@ th {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: #333;
 }
