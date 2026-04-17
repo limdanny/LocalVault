@@ -32,7 +32,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
     // OpenAPI (Swagger + Redoc)
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
 
     // Thymeleaf (Redoc 페이지용)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

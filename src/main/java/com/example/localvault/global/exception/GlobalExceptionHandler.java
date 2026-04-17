@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
+		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(ApiResponse.error("SYS_001", "서버 오류가 발생했습니다"));
 	}
