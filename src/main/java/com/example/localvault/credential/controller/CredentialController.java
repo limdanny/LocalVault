@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 @Tag(name = "Credential", description = "비밀번호 관리 API")
 @RestController
@@ -45,8 +47,11 @@ public class CredentialController {
 
     @Operation(summary = "비밀번호 상세 조회 (복호화)")
     @GetMapping("/{id}/reveal")
-    public ResponseEntity<ApiResponse<CredentialResponse>> reveal(@PathVariable Long id) {
-        CredentialResponse response = credentialService.reveal(id);
+    public ResponseEntity<ApiResponse<CredentialResponse>> reveal(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Long memberId,
+            HttpServletRequest request) {
+        CredentialResponse response = credentialService.reveal(id, memberId, request);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
